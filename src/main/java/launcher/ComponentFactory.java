@@ -4,10 +4,10 @@ import controller.BookController;
 import database.DatabaseConnectionFactory;
 import javafx.stage.Stage;
 import mapper.BookMapper;
-import repository.BookRepository;
-import repository.BookRepositoryMySQL;
-import service.BookService;
-import service.BookServiceImplementation;
+import repository.book.BookRepository;
+import repository.book.BookRepositoryMySQL;
+import service.book.BookService;
+import service.book.BookServiceImplementation;
 import view.BookView;
 import view.model.BookDTO;
 

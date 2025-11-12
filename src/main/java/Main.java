@@ -1,11 +1,18 @@
 import database.DatabaseConnectionFactory;
+import database.RightsRolesRepositoryMySQL;
 import model.Book;
 import model.builder.BookBuilder;
-import repository.BookRepository;
-import repository.BookRepositoryMock;
-import repository.BookRepositoryMySQL;
-import service.BookService;
-import service.BookServiceImplementation;
+import repository.book.BookRepository;
+import repository.book.BookRepositoryCacheDecorator;
+import repository.book.BookRepositoryMySQL;
+import repository.book.Cache;
+import repository.security.RightsRolesRepository;
+import repository.user.UserRepository;
+import repository.user.UserRepositoryMySQL;
+import service.book.BookService;
+import service.book.BookServiceImplementation;
+import service.user.AuthenticationService;
+import service.user.AuthenticationServiceMySQL;
 
 import java.sql.Connection;
 import java.time.LocalDate;
@@ -31,27 +38,59 @@ public class Main {
 //        bookRepository.removeAll();
 //        System.out.println(bookRepository.findAll());
 
-        Connection connection = DatabaseConnectionFactory.getConnectionWrapper(false).getConnection();
-        BookRepository bookRepository = new BookRepositoryMySQL(connection);
+//        Connection connection = DatabaseConnectionFactory.getConnectionWrapper(false).getConnection();
+//        BookRepository bookRepository = new BookRepositoryMySQL(connection);
+//
+//        BookService bookService = new BookServiceImplementation(bookRepository);
+//
+//        bookService.save(book);
+//
+//        System.out.println(bookService.findAll());
+//
+//        Book bookMoaraCuNoroc = new BookBuilder().setTitle("Moara cu noroc").setAuthor("Ioan Slavici").setPublishDate(LocalDate.of(1950, 2, 10)).build();
+//
+//        bookService.save(bookMoaraCuNoroc);
+//
+//        System.out.println(bookService.findAll());
+//
+//        bookService.delete(bookMoaraCuNoroc);
+//        bookService.delete(book);
+//
+//        System.out.println(bookService.findAll());
+//
+//        bookService.save(book);
+//        System.out.println(bookService.findAll());
+
+//        Connection connection = DatabaseConnectionFactory.getConnectionWrapper(false).getConnection();
+//        BookRepository bookRepository = new BookRepositoryCacheDecorator(new BookRepositoryMySQL(connection), new Cache<>());
+//        BookService bookService = new BookServiceImplementation(bookRepository);
+//
+//        bookRepository.save(book);
+//        System.out.println(bookService.findAll());
+//        System.out.println(bookService.findAll());
+
+        BookRepository bookRepository = new BookRepositoryCacheDecorator(
+                new BookRepositoryMySQL(DatabaseConnectionFactory.getConnectionWrapper(true).getConnection()),
+                new Cache<>()
+        );
 
         BookService bookService = new BookServiceImplementation(bookRepository);
 
-        bookService.save(book);
+        Connection connection = DatabaseConnectionFactory.getConnectionWrapper(true).getConnection();
 
-        System.out.println(bookService.findAll());
+        RightsRolesRepository rightsRolesRepository = new RightsRolesRepositoryMySQL(connection);
 
-        Book bookMoaraCuNoroc = new BookBuilder().setTitle("Moara cu noroc").setAuthor("Ioan Slavici").setPublishDate(LocalDate.of(1950, 2, 10)).build();
+        UserRepository userRepository = new UserRepositoryMySQL(connection, rightsRolesRepository);
 
-        bookService.save(bookMoaraCuNoroc);
+        AuthenticationService authenticationService = new AuthenticationServiceMySQL(userRepository, rightsRolesRepository);
 
-        System.out.println(bookService.findAll());
+        if(userRepository.existsByUsername("Alex")) {
+            System.out.println("Username already exists");
+        }
+        else {
+            authenticationService.register("Alex", "parola123!");
+        }
 
-        bookService.delete(bookMoaraCuNoroc);
-        bookService.delete(book);
-
-        System.out.println(bookService.findAll());
-
-        bookService.save(book);
-        System.out.println(bookService.findAll());
+        System.out.println(authenticationService.login("Alex", "parola123!"));
     }
 }
