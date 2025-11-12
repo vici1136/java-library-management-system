@@ -1,12 +1,18 @@
 import database.DatabaseConnectionFactory;
+import database.RightsRolesRepositoryMySQL;
 import model.Book;
 import model.builder.BookBuilder;
 import repository.book.BookRepository;
 import repository.book.BookRepositoryCacheDecorator;
 import repository.book.BookRepositoryMySQL;
 import repository.book.Cache;
-import service.BookService;
-import service.BookServiceImplementation;
+import repository.security.RightsRolesRepository;
+import repository.user.UserRepository;
+import repository.user.UserRepositoryMySQL;
+import service.book.BookService;
+import service.book.BookServiceImplementation;
+import service.user.AuthenticationService;
+import service.user.AuthenticationServiceMySQL;
 
 import java.sql.Connection;
 import java.time.LocalDate;
@@ -55,12 +61,36 @@ public class Main {
 //        bookService.save(book);
 //        System.out.println(bookService.findAll());
 
-        Connection connection = DatabaseConnectionFactory.getConnectionWrapper(false).getConnection();
-        BookRepository bookRepository = new BookRepositoryCacheDecorator(new BookRepositoryMySQL(connection), new Cache<>());
+//        Connection connection = DatabaseConnectionFactory.getConnectionWrapper(false).getConnection();
+//        BookRepository bookRepository = new BookRepositoryCacheDecorator(new BookRepositoryMySQL(connection), new Cache<>());
+//        BookService bookService = new BookServiceImplementation(bookRepository);
+//
+//        bookRepository.save(book);
+//        System.out.println(bookService.findAll());
+//        System.out.println(bookService.findAll());
+
+        BookRepository bookRepository = new BookRepositoryCacheDecorator(
+                new BookRepositoryMySQL(DatabaseConnectionFactory.getConnectionWrapper(true).getConnection()),
+                new Cache<>()
+        );
+
         BookService bookService = new BookServiceImplementation(bookRepository);
 
-        bookRepository.save(book);
-        System.out.println(bookService.findAll());
-        System.out.println(bookService.findAll());
+        Connection connection = DatabaseConnectionFactory.getConnectionWrapper(true).getConnection();
+
+        RightsRolesRepository rightsRolesRepository = new RightsRolesRepositoryMySQL(connection);
+
+        UserRepository userRepository = new UserRepositoryMySQL(connection, rightsRolesRepository);
+
+        AuthenticationService authenticationService = new AuthenticationServiceMySQL(userRepository, rightsRolesRepository);
+
+        if(userRepository.existsByUsername("Alex")) {
+            System.out.println("Username already exists");
+        }
+        else {
+            authenticationService.register("Alex", "parola123!");
+        }
+
+        System.out.println(authenticationService.login("Alex", "parola123!"));
     }
 }

@@ -6,8 +6,8 @@ import javafx.stage.Stage;
 import mapper.BookMapper;
 import repository.book.BookRepository;
 import repository.book.BookRepositoryMySQL;
-import service.BookService;
-import service.BookServiceImplementation;
+import service.book.BookService;
+import service.book.BookServiceImplementation;
 import view.BookView;
 import view.model.BookDTO;
 
