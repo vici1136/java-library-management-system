@@ -42,11 +42,11 @@ public class AuthenticationServiceMySQL implements AuthenticationService {
         if (!userValid) {
             userValidator.getErrors().forEach(userRegisterNotification::addError);
             userRegisterNotification.setResult(Boolean.FALSE);
+            return userRegisterNotification;
         } else {
             user.setPassword(hashPassword(password));
-            userRegisterNotification.setResult(userRepository.save(user));
+            return userRepository.save(user);
         }
-        return userRegisterNotification;
     }
 
     @Override
