@@ -25,7 +25,6 @@ public class LoginComponentFactory {
     private static LoginComponentFactory instance;
     private static Boolean componentsForTests;
     private static Stage stage;
-    private final UserValidator userValidator;
 
     public static LoginComponentFactory getInstance(Boolean aComponentsForTests, Stage aStage) {
         if (instance == null) {
@@ -42,9 +41,8 @@ public class LoginComponentFactory {
         this.rightsRolesRepository = new RightsRolesRepositoryMySQL(connection);
         this.userRepository = new UserRepositoryMySQL(connection, rightsRolesRepository);
         this.authenticationService = new AuthenticationServiceMySQL(userRepository, rightsRolesRepository);
-        this.userValidator = new UserValidator(userRepository);
         this.loginView = new LoginView(stage);
-        this.loginController = new LoginController(loginView, authenticationService, userValidator);
+        this.loginController = new LoginController(loginView, authenticationService);
         this.bookRepository = new BookRepositoryMySQL(connection);
     }
 
