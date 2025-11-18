@@ -2,8 +2,7 @@ package launcher;
 import controller.LoginController;
 import database.DatabaseConnectionFactory;
 import javafx.stage.Stage;
-import model.User;
-import model.validator.UserValidator;
+import repository.book.BookRepository;
 import repository.book.BookRepositoryMySQL;
 import repository.security.RightsRolesRepository;
 import repository.security.RightsRolesRepositoryMySQL;
@@ -21,7 +20,7 @@ public class LoginComponentFactory {
     private final AuthenticationService authenticationService;
     private final UserRepository userRepository;
     private final RightsRolesRepository rightsRolesRepository;
-    private final BookRepositoryMySQL bookRepository;
+    private final BookRepository bookRepository;
     private static LoginComponentFactory instance;
     private static Boolean componentsForTests;
     private static Stage stage;
@@ -70,7 +69,7 @@ public class LoginComponentFactory {
         return loginView;
     }
 
-    public BookRepositoryMySQL getBookRepository(){
+    public BookRepository getBookRepository(){
         return bookRepository;
     }
 

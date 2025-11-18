@@ -29,16 +29,22 @@ public class UserRepositoryMySQL implements UserRepository {
         return null;
     }
 
+    // SQL Injection!!!
+    // vici@gmail.com' and 1=1; --
+
     @Override
     public Notification<User> findByUsernameAndPassword(String username, String password) {
 
         Notification<User> findByUsernameAndPasswordNotification = new Notification<>();
         try {
-            Statement statement = connection.createStatement();
+            String fetchUserSql = "Select * from `" + USER + "` where `username`= ? and `password`= ?";
 
-            String fetchUserSql =
-                    "Select * from `" + USER + "` where `username`=\'" + username + "\' and `password`=\'" + password + "\'";
-            ResultSet userResultSet = statement.executeQuery(fetchUserSql);
+            PreparedStatement statement = connection.prepareStatement(fetchUserSql);
+
+            statement.setString(1, username);
+            statement.setString(2, password);
+
+            ResultSet userResultSet = statement.executeQuery();
 
             if (userResultSet.next())
             {
@@ -63,7 +69,9 @@ public class UserRepositoryMySQL implements UserRepository {
     }
 
     @Override
-    public boolean save(User user) {
+    public Notification<Boolean> save(User user) {
+
+        Notification<Boolean> saveNotification = new Notification<>();
         try {
             PreparedStatement insertUserStatement = connection
                     .prepareStatement("INSERT INTO user values (null, ?, ?)", Statement.RETURN_GENERATED_KEYS);
@@ -72,18 +80,23 @@ public class UserRepositoryMySQL implements UserRepository {
             insertUserStatement.executeUpdate();
 
             ResultSet rs = insertUserStatement.getGeneratedKeys();
-            rs.next();
-            long userId = rs.getLong(1);
-            user.setId(userId);
+            if (rs.next()) {
+                long userId = rs.getLong(1);
+                user.setId(userId);
 
-            rightsRolesRepository.addRolesToUser(user, user.getRoles());
-
-            return true;
+                rightsRolesRepository.addRolesToUser(user, user.getRoles());
+                saveNotification.setResult(true);
+            } else {
+                saveNotification.addError("Register failed: Could not retrieve created ID.");
+                saveNotification.setResult(false);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            saveNotification.addError("Something is wrong with the Database!");
+            saveNotification.setResult(false);
         }
 
+        return saveNotification;
     }
 
     @Override
