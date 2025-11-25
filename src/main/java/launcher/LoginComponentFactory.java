@@ -8,8 +8,8 @@ import repository.security.RightsRolesRepository;
 import repository.security.RightsRolesRepositoryMySQL;
 import repository.user.UserRepository;
 import repository.user.UserRepositoryMySQL;
-import service.user.AuthenticationService;
-import service.user.AuthenticationServiceMySQL;
+import service.user.authentification.AuthenticationService;
+import service.user.authentification.AuthenticationServiceMySQL;
 import view.LoginView;
 
 import java.sql.Connection;

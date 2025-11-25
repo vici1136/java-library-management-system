@@ -16,4 +16,10 @@ public interface UserRepository {
     void removeAll();
 
     boolean existsByUsername(String username);
+
+    User findByUsername(String username);
+
+    boolean update(User user);
+
+    boolean delete(User user);
 }

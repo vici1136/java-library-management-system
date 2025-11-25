@@ -1,4 +1,4 @@
-package service.user;
+package service.user.authentification;
 import model.Role;
 import model.User;
 import model.builder.UserBuilder;

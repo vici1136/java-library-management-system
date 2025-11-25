@@ -1,5 +1,6 @@
 package view;
 
+import database.Constants;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -12,6 +13,7 @@ import javafx.stage.Stage;
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 
+import model.User;
 import view.model.BookDTO;
 
 import java.util.List;
@@ -27,23 +29,43 @@ public class BookView {
     private Button saveBookButton;
     private Button deleteBookButton;
 
-    public BookView(Stage primaryStage, List<BookDTO> books) {
-        primaryStage.setTitle("Library");
+    public BookView(Stage primaryStage, List<BookDTO> books, User user) {
+        primaryStage.setTitle("Library - Logged in as: " + user.getUsername());
 
         GridPane gridPane = new GridPane();
         initializaGridPane(gridPane);
 
         Scene scene = new Scene(gridPane, 720, 480);
-
         primaryStage.setScene(scene);
 
         bookObservableList = FXCollections.observableList(books);
 
         initTableView(gridPane);
-
         initSaveOptions(gridPane);
 
+        prepareGuiBasedOnRole(user);
+
         primaryStage.show();
+    }
+
+    private void prepareGuiBasedOnRole(User user) {
+        String role = user.getRoles().get(0).getRole();
+
+        if (Constants.Roles.CUSTOMER.equals(role)) {
+            titleLabel.setVisible(false);
+            titleTextField.setVisible(false);
+            authorLabel.setVisible(false);
+            authorTextField.setVisible(false);
+            saveBookButton.setVisible(false);
+            deleteBookButton.setVisible(false);
+
+            titleLabel.setManaged(false);
+            titleTextField.setManaged(false);
+            authorLabel.setManaged(false);
+            authorTextField.setManaged(false);
+            saveBookButton.setManaged(false);
+            deleteBookButton.setManaged(false);
+        }
     }
 
     private void initializaGridPane(GridPane gridPane){
@@ -55,7 +77,6 @@ public class BookView {
 
     private void initTableView(GridPane gridPane){
         bookTableView  = new TableView<BookDTO>();
-
         bookTableView.setPlaceholder(new Label("No books to display"));
 
         TableColumn<BookDTO, String> titleColumn = new TableColumn<BookDTO, String>("Title");
@@ -65,7 +86,6 @@ public class BookView {
         authorColumn.setCellValueFactory(new PropertyValueFactory<>("author"));
 
         bookTableView.getColumns().addAll(titleColumn,authorColumn);
-
         bookTableView.setItems(bookObservableList);
 
         gridPane.add(bookTableView,0,0, 5, 1);

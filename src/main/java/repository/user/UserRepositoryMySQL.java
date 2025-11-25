@@ -1,4 +1,5 @@
 package repository.user;
+
 import model.User;
 import model.builder.UserBuilder;
 import model.validator.Notification;
@@ -10,8 +11,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.ArrayList;
 
 import static database.Constants.Tables.USER;
+import static database.Constants.Tables.USER_ROLE;
 
 public class UserRepositoryMySQL implements UserRepository {
 
@@ -26,7 +29,27 @@ public class UserRepositoryMySQL implements UserRepository {
 
     @Override
     public List<User> findAll() {
-        return null;
+
+        List<User> users = new ArrayList<>();
+        try {
+            Statement statement = connection.createStatement();
+            String sql = "SELECT * FROM `" + USER + "`";
+            ResultSet userResultSet = statement.executeQuery(sql);
+
+            while (userResultSet.next()) {
+                User user = new UserBuilder()
+                        .setId(userResultSet.getLong("id"))
+                        .setUsername(userResultSet.getString("username"))
+                        .setPassword(userResultSet.getString("password"))
+                        .setRoles(rightsRolesRepository.findRolesForUser(userResultSet.getLong("id")))
+                        .build();
+
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
     }
 
     // SQL Injection!!!
@@ -49,6 +72,7 @@ public class UserRepositoryMySQL implements UserRepository {
             if (userResultSet.next())
             {
                 User user = new UserBuilder()
+                        .setId(userResultSet.getLong("id"))
                         .setUsername(userResultSet.getString("username"))
                         .setPassword(userResultSet.getString("password"))
                         .setRoles(rightsRolesRepository.findRolesForUser(userResultSet.getLong("id")))
@@ -102,9 +126,13 @@ public class UserRepositoryMySQL implements UserRepository {
     @Override
     public void removeAll() {
         try {
-            String sql = "DELETE FROM user WHERE id >= 0";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.executeUpdate();
+            String deleteRolesSql = "DELETE FROM `" + USER_ROLE + "` WHERE id >= 0";
+            Statement rolesSt = connection.createStatement();
+            rolesSt.executeUpdate(deleteRolesSql);
+
+            String sql = "DELETE FROM `" + USER + "` WHERE id >= 0";
+            Statement userSt = connection.createStatement();
+            userSt.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -125,4 +153,70 @@ public class UserRepositoryMySQL implements UserRepository {
         }
     }
 
+    @Override
+    public User findByUsername(String username) {
+        try {
+            String fetchUserSql = "SELECT * FROM `" + USER + "` WHERE `username` = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(fetchUserSql);
+            preparedStatement.setString(1, username);
+
+            ResultSet userResultSet = preparedStatement.executeQuery();
+
+            if (userResultSet.next()) {
+                return new UserBuilder()
+                        .setId(userResultSet.getLong("id"))
+                        .setUsername(userResultSet.getString("username"))
+                        .setPassword(userResultSet.getString("password"))
+                        .setRoles(rightsRolesRepository.findRolesForUser(userResultSet.getLong("id")))
+                        .build();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public boolean update(User user) {
+        try {
+            String updateSql = "UPDATE `" + USER + "` SET username = ?, password = ? WHERE id = ?";
+            PreparedStatement updateStatement = connection.prepareStatement(updateSql);
+            updateStatement.setString(1, user.getUsername());
+            updateStatement.setString(2, user.getPassword());
+            updateStatement.setLong(3, user.getId());
+            updateStatement.executeUpdate();
+
+            String deleteRolesSql = "DELETE FROM `" + USER_ROLE + "` WHERE user_id = ?";
+            PreparedStatement deleteRolesStmt = connection.prepareStatement(deleteRolesSql);
+            deleteRolesStmt.setLong(1, user.getId());
+            deleteRolesStmt.executeUpdate();
+
+            rightsRolesRepository.addRolesToUser(user, user.getRoles());
+
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean delete(User user) {
+        try {
+            String deleteRolesSql = "DELETE FROM `" + USER_ROLE + "` WHERE user_id = ?";
+            PreparedStatement deleteRolesStmt = connection.prepareStatement(deleteRolesSql);
+            deleteRolesStmt.setLong(1, user.getId());
+            deleteRolesStmt.executeUpdate();
+
+            String deleteUserSql = "DELETE FROM `" + USER + "` WHERE id = ?";
+            PreparedStatement deleteUserStmt = connection.prepareStatement(deleteUserSql);
+            deleteUserStmt.setLong(1, user.getId());
+            deleteUserStmt.executeUpdate();
+
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
