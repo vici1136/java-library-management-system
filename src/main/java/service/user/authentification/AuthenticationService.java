@@ -1,4 +1,4 @@
-package service.user;
+package service.user.authentification;
 
 import model.User;
 import model.validator.Notification;

@@ -11,8 +11,8 @@ import repository.user.UserRepository;
 import repository.user.UserRepositoryMySQL;
 import service.book.BookService;
 import service.book.BookServiceImplementation;
-import service.user.AuthenticationService;
-import service.user.AuthenticationServiceMySQL;
+import service.user.authentification.AuthenticationService;
+import service.user.authentification.AuthenticationServiceMySQL;
 
 import java.sql.Connection;
 import java.time.LocalDate;

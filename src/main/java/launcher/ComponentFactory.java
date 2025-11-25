@@ -4,6 +4,7 @@ import controller.BookController;
 import database.DatabaseConnectionFactory;
 import javafx.stage.Stage;
 import mapper.BookMapper;
+import model.User;
 import repository.book.BookRepository;
 import repository.book.BookRepositoryMySQL;
 import service.book.BookService;
@@ -21,24 +22,18 @@ public class ComponentFactory {
     private final BookService bookService;
     private static ComponentFactory instance;
 
-    public static ComponentFactory getInstance(Boolean componentsForTest, Stage primaryStage) {
-        if (instance == null) {
-            synchronized (ComponentFactory.class) {
-                if (instance == null) {
-                    instance = new ComponentFactory(componentsForTest, primaryStage);
-                }
-            }
-        }
+    public static ComponentFactory getInstance(Boolean componentsForTest, Stage primaryStage, User currentUser) {
+        instance = new ComponentFactory(componentsForTest, primaryStage, currentUser);
 
         return instance;
     }
 
-    private ComponentFactory(Boolean componentsForTest, Stage primaryStage) {
+    private ComponentFactory(Boolean componentsForTest, Stage primaryStage, User currentUser) {
         Connection connection = DatabaseConnectionFactory.getConnectionWrapper(componentsForTest).getConnection();
         this.bookRepository = new BookRepositoryMySQL(connection);
         this.bookService = new BookServiceImplementation(bookRepository);
         List<BookDTO> bookDTOs = BookMapper.convertBookListToBookDTOList(bookService.findAll());
-        this.bookView = new BookView(primaryStage, bookDTOs);
+        this.bookView = new BookView(primaryStage, bookDTOs, currentUser);
         this.bookController = new BookController(bookView, bookService);
     }
 
