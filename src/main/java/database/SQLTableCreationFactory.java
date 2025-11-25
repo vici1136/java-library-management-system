@@ -1,47 +1,48 @@
 package database;
 
-import static database.Constants.Tables.BOOK;
-import static database.Constants.Tables.RIGHT;
-import static database.Constants.Tables.ROLE;
-import static database.Constants.Tables.ROLE_RIGHT;
-import static database.Constants.Tables.USER;
-import static database.Constants.Tables.USER_ROLE;
+import static database.Constants.Tables.*;
 
 public class SQLTableCreationFactory {
 
     public String getCreateSQLForTable(String table) {
         return switch (table) {
             case BOOK -> "CREATE TABLE IF NOT EXISTS book (" +
-                    "  id int(11) NOT NULL AUTO_INCREMENT," +
+                    "  id BIGINT NOT NULL AUTO_INCREMENT," +
                     "  author varchar(500) NOT NULL," +
                     "  title varchar(500) NOT NULL," +
                     "  publishedDate datetime DEFAULT NULL," +
+                    "  price DECIMAL(10, 2) NOT NULL DEFAULT 10.00," +
+                    "  stock INT NOT NULL DEFAULT 0," +
                     "  PRIMARY KEY (id)," +
                     "  UNIQUE KEY id_UNIQUE (id)" +
                     ") ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;";
+
             case USER -> "CREATE TABLE IF NOT EXISTS user (" +
-                    "  id INT NOT NULL AUTO_INCREMENT," +
+                    "  id BIGINT NOT NULL AUTO_INCREMENT," +
                     "  username VARCHAR(200) NOT NULL," +
                     "  password VARCHAR(64) NOT NULL," +
                     "  PRIMARY KEY (id)," +
                     "  UNIQUE INDEX id_UNIQUE (id ASC)," +
                     "  UNIQUE INDEX username_UNIQUE (username ASC));";
+
             case ROLE -> "  CREATE TABLE IF NOT EXISTS role (" +
-                    "  id INT NOT NULL AUTO_INCREMENT," +
+                    "  id BIGINT NOT NULL AUTO_INCREMENT," +
                     "  role VARCHAR(100) NOT NULL," +
                     "  PRIMARY KEY (id)," +
                     "  UNIQUE INDEX id_UNIQUE (id ASC)," +
                     "  UNIQUE INDEX role_UNIQUE (role ASC));";
+
             case RIGHT -> "  CREATE TABLE IF NOT EXISTS `right` (" +
-                    "  `id` INT NOT NULL AUTO_INCREMENT," +
+                    "  `id` BIGINT NOT NULL AUTO_INCREMENT," +
                     "  `right` VARCHAR(100) NOT NULL," +
                     "  PRIMARY KEY (`id`)," +
                     "  UNIQUE INDEX `id_UNIQUE` (`id` ASC)," +
                     "  UNIQUE INDEX `right_UNIQUE` (`right` ASC));";
+
             case ROLE_RIGHT -> "  CREATE TABLE IF NOT EXISTS role_right (" +
-                    "  id INT NOT NULL AUTO_INCREMENT," +
-                    "  role_id INT NOT NULL," +
-                    "  right_id INT NOT NULL," +
+                    "  id BIGINT NOT NULL AUTO_INCREMENT," +
+                    "  role_id BIGINT NOT NULL," +
+                    "  right_id BIGINT NOT NULL," +
                     "  PRIMARY KEY (id)," +
                     "  UNIQUE INDEX id_UNIQUE (id ASC)," +
                     "  INDEX role_id_idx (role_id ASC)," +
@@ -56,10 +57,11 @@ public class SQLTableCreationFactory {
                     "    REFERENCES `right` (id)" +
                     "    ON DELETE CASCADE" +
                     "    ON UPDATE CASCADE);";
+
             case USER_ROLE -> "\tCREATE TABLE IF NOT EXISTS user_role (" +
-                    "  id INT NOT NULL AUTO_INCREMENT," +
-                    "  user_id INT NOT NULL," +
-                    "  role_id INT NOT NULL," +
+                    "  id BIGINT NOT NULL AUTO_INCREMENT," +
+                    "  user_id BIGINT NOT NULL," +
+                    "  role_id BIGINT NOT NULL," +
                     "  PRIMARY KEY (id)," +
                     "  UNIQUE INDEX id_UNIQUE (id ASC)," +
                     "  INDEX user_id_idx (user_id ASC)," +
@@ -74,8 +76,30 @@ public class SQLTableCreationFactory {
                     "    REFERENCES role (id)" +
                     "    ON DELETE CASCADE" +
                     "    ON UPDATE CASCADE);";
+
+            case SALE -> "CREATE TABLE IF NOT EXISTS sale (" +
+                    "  id BIGINT NOT NULL AUTO_INCREMENT," +
+                    "  book_id BIGINT NOT NULL," +
+                    "  customer_id BIGINT NOT NULL," +
+                    "  employee_id BIGINT NOT NULL," +
+                    "  price_sold_at DECIMAL(10, 2) NOT NULL," +
+                    "  sale_date DATETIME DEFAULT CURRENT_TIMESTAMP," +
+                    "  PRIMARY KEY (id)," +
+                    "  UNIQUE INDEX id_UNIQUE (id ASC)," +
+                    "  CONSTRAINT fk_sale_book" +
+                    "    FOREIGN KEY (book_id)" +
+                    "    REFERENCES book (id)" +
+                    "    ON DELETE CASCADE," +
+                    "  CONSTRAINT fk_sale_customer" +
+                    "    FOREIGN KEY (customer_id)" +
+                    "    REFERENCES user (id)" +
+                    "    ON DELETE CASCADE," +
+                    "  CONSTRAINT fk_sale_employee" +
+                    "    FOREIGN KEY (employee_id)" +
+                    "    REFERENCES user (id)" +
+                    "    ON DELETE CASCADE);";
+
             default -> "";
         };
     }
-
 }

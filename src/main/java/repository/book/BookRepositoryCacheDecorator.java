@@ -56,4 +56,10 @@ public class BookRepositoryCacheDecorator extends BookRepositoryDecorator {
 
         return decoratedBookRepository.save(book);
     }
+
+    @Override
+    public boolean update(Book book) {
+        cache.invalidateCache();
+        return decoratedBookRepository.update(book);
+    }
 }

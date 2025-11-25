@@ -95,6 +95,28 @@ public class BookRepositoryMySQL implements BookRepository{
     }
 
     @Override
+    public boolean update(Book book) {
+        String sql = "UPDATE book SET author = ?, title = ?, publishedDate = ?, price = ?, stock = ? WHERE id = ?";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+
+            statement.setString(1, book.getAuthor());
+            statement.setString(2, book.getTitle());
+            statement.setDate(3, java.sql.Date.valueOf(book.getPublishDate()));
+            statement.setDouble(4, book.getPrice());
+            statement.setInt(5, book.getStock());
+            statement.setLong(6, book.getId());
+
+            int rowsUpdated = statement.executeUpdate();
+
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
     public void removeAll() {
         String sql = "DELETE FROM book WHERE id >= 0;";
 
@@ -113,6 +135,8 @@ public class BookRepositoryMySQL implements BookRepository{
                 .setTitle(resultSet.getString("title"))
                 .setAuthor(resultSet.getString("author"))
                 .setPublishDate(new java.sql.Date(resultSet.getDate("publishedDate").getTime()).toLocalDate())
+                .setPrice(resultSet.getDouble("price"))
+                .setStock(resultSet.getInt("stock"))
                 .build();
     }
 }

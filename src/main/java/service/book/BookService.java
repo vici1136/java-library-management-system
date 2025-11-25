@@ -1,6 +1,7 @@
 package service.book;
 
 import model.Book;
+import model.User;
 
 import java.util.*;
 
@@ -12,4 +13,6 @@ public interface BookService {
     boolean delete(Book book);
 
     int getAgeOfBook(Long id);
+
+    boolean buyBook(Book book, User customer);
 }

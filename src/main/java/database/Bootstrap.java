@@ -1,4 +1,5 @@
 package database;
+
 import repository.security.RightsRolesRepository;
 import repository.security.RightsRolesRepositoryMySQL;
 
@@ -14,18 +15,26 @@ import static database.Constants.Roles.ROLES;
 import static database.Constants.Schemas.SCHEMAS;
 import static database.Constants.getRolesRights;
 
-// Script - code that automates some steps or processes
-
 public class Bootstrap {
 
     private static RightsRolesRepository rightsRolesRepository;
 
-    public static void main(String[] args) throws SQLException {
-        dropAll();
+    public static void main(String[] args) {
+        try {
+            dropAll();
 
-        bootstrapTables();
+            System.out.println("Bootstrap: Tables dropped. Creating new tables...");
+            bootstrapTables();
 
-        bootstrapUserData();
+            System.out.println("Bootstrap: Tables created. Adding user data...");
+            bootstrapUserData();
+
+            System.out.println("Bootstrap successfully finished!");
+
+        } catch (SQLException e) {
+            System.out.println("SQL ERROR:");
+            e.printStackTrace();
+        }
     }
 
     private static void dropAll() throws SQLException {
@@ -36,14 +45,13 @@ public class Bootstrap {
             Statement statement = connection.createStatement();
 
             String[] dropStatements = {
-                    "TRUNCATE `role_right`;",
-                    "DROP TABLE `role_right`;",
-                    "TRUNCATE `right`;",
-                    "DROP TABLE `right`;",
-                    "TRUNCATE `user_role`;",
-                    "DROP TABLE `user_role`;",
-                    "TRUNCATE `role`;",
-                    "DROP TABLE  `book`, `role`, `user`;"
+                    "DROP TABLE IF EXISTS `sale`;",
+                    "DROP TABLE IF EXISTS `role_right`;",
+                    "DROP TABLE IF EXISTS `user_role`;",
+                    "DROP TABLE IF EXISTS `right`;",
+                    "DROP TABLE IF EXISTS `book`;",
+                    "DROP TABLE IF EXISTS `user`;",
+                    "DROP TABLE IF EXISTS `role`;"
             };
 
             Arrays.stream(dropStatements).forEach(dropStatement -> {
@@ -54,8 +62,6 @@ public class Bootstrap {
                 }
             });
         }
-
-        System.out.println("Done table bootstrap");
     }
 
     private static void bootstrapTables() throws SQLException {
@@ -63,7 +69,6 @@ public class Bootstrap {
 
         for (String schema : SCHEMAS) {
             System.out.println("Bootstrapping " + schema + " schema");
-
 
             JDBConnectionWrapper connectionWrapper = new JDBConnectionWrapper(schema);
             Connection connection = connectionWrapper.getConnection();
@@ -75,8 +80,6 @@ public class Bootstrap {
                 statement.execute(createTableSQL);
             }
         }
-
-        System.out.println("Done table bootstrap");
     }
 
     private static void bootstrapUserData() throws SQLException {
