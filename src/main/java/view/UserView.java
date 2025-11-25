@@ -22,6 +22,7 @@ public class UserView {
     private final ObservableList<UserDTO> userObservableList;
     private Button promoteButton;
     private Button deleteButton;
+    private Button logoutButton;
 
     public UserView(Stage primaryStage, List<UserDTO> users) {
         primaryStage.setTitle("User Management");
@@ -36,6 +37,8 @@ public class UserView {
 
         initTableView(gridPane);
         initButtons(gridPane);
+
+        initLogout(gridPane);
 
         primaryStage.show();
     }
@@ -72,6 +75,20 @@ public class UserView {
         buttonBox.setAlignment(Pos.CENTER);
 
         gridPane.add(buttonBox, 0, 1, 5, 1);
+    }
+
+    private void initLogout(GridPane gridPane){
+        logoutButton = new Button("Logout");
+
+        gridPane.add(logoutButton, 6, 0);
+    }
+
+    public void addLogoutButtonListener(EventHandler<ActionEvent> listener) {
+        logoutButton.setOnAction(listener);
+    }
+
+    public Scene getScene() {
+        return userTableView.getScene();
     }
 
     public void addPromoteButtonListener(EventHandler<ActionEvent> listener) {

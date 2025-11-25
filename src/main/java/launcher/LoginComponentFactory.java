@@ -26,11 +26,9 @@ public class LoginComponentFactory {
     private static Stage stage;
 
     public static LoginComponentFactory getInstance(Boolean aComponentsForTests, Stage aStage) {
-        if (instance == null) {
-            componentsForTests = aComponentsForTests;
-            stage = aStage;
-            instance = new LoginComponentFactory(componentsForTests, stage);
-        }
+        componentsForTests = aComponentsForTests;
+        stage = aStage;
+        instance = new LoginComponentFactory(aComponentsForTests, aStage);
 
         return instance;
     }
