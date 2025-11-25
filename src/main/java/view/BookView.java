@@ -28,6 +28,7 @@ public class BookView {
     private Label authorLabel;
     private Button saveBookButton;
     private Button deleteBookButton;
+    private Button logoutButton;
 
     public BookView(Stage primaryStage, List<BookDTO> books, User user) {
         primaryStage.setTitle("Library - Logged in as: " + user.getUsername());
@@ -42,6 +43,8 @@ public class BookView {
 
         initTableView(gridPane);
         initSaveOptions(gridPane);
+
+        initLogoutButton(gridPane);
 
         prepareGuiBasedOnRole(user);
 
@@ -109,6 +112,15 @@ public class BookView {
 
         deleteBookButton = new Button("Delete");
         gridPane.add(deleteBookButton,6,1);
+    }
+
+    private void initLogoutButton(GridPane gridPane) {
+        logoutButton = new Button("Logout");
+        gridPane.add(logoutButton, 6, 0);
+    }
+
+    public void addLogoutButtonListener(EventHandler<ActionEvent> logoutButtonListener) {
+        logoutButton.setOnAction(logoutButtonListener);
     }
 
     public void addSaveButtonListener(EventHandler<ActionEvent> saveButtonListener){

@@ -3,6 +3,8 @@ package controller;
 import database.Constants;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.stage.Stage;
+import launcher.LoginComponentFactory;
 import mapper.UserMapper;
 import model.Role;
 import model.User;
@@ -28,6 +30,8 @@ public class UserController {
 
         this.userView.addPromoteButtonListener(new PromoteButtonListener());
         this.userView.addDeleteButtonListener(new DeleteButtonListener());
+
+        this.userView.addLogoutButtonListener(new LogoutButtonListener());
     }
 
     private class PromoteButtonListener implements EventHandler<ActionEvent> {
@@ -75,6 +79,15 @@ public class UserController {
             } else {
                 userView.displayAlertMessage("Error", "Deletion Failed", result.getFormattedErrors());
             }
+        }
+    }
+
+    private class LogoutButtonListener implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+            Stage stage = (Stage) userView.getScene().getWindow();
+            stage.close();
+            LoginComponentFactory.getInstance(false, stage);
         }
     }
 

@@ -2,6 +2,8 @@ package controller;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.stage.Stage;
+import launcher.LoginComponentFactory;
 import mapper.BookMapper;
 import service.book.BookService;
 import view.BookView;
@@ -19,6 +21,8 @@ public class BookController {
 
         this.bookView.addSaveButtonListener(new SaveButtonListener());
         this.bookView.addDeleteButtonListener(new DeleteButtonListener());
+
+        this.bookView.addLogoutButtonListener(new LogoutButtonListener());
     }
 
     private class SaveButtonListener implements EventHandler<ActionEvent> {
@@ -63,6 +67,17 @@ public class BookController {
             else {
                 bookView.addDisplayAlertMessage("Delete Error", "Problem at deleting a book", "You must select a book to delete");
             }
+        }
+    }
+
+    private class LogoutButtonListener implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+            Stage stage = (Stage) bookView.getBookTableView().getScene().getWindow();
+
+            stage.close();
+
+            LoginComponentFactory.getInstance(false, stage);
         }
     }
 }
