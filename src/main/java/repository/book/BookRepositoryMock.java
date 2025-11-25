@@ -40,4 +40,15 @@ public class BookRepositoryMock  implements BookRepository {
     public void removeAll() {
         books.clear();
     }
+
+    @Override
+    public boolean update(Book book) {
+        for (int i = 0; i < books.size(); i++) {
+            if (books.get(i).getId().equals(book.getId())) {
+                books.set(i, book);
+                return true;
+            }
+        }
+        return false;
+    }
 }

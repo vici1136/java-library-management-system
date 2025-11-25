@@ -20,17 +20,25 @@ import java.util.List;
 
 public class BookView {
 
-    private TableView bookTableView;
+    private TableView<BookDTO> bookTableView;
     private final ObservableList<BookDTO> bookObservableList;
+
     private TextField authorTextField;
     private TextField titleTextField;
+
     private Label titleLabel;
     private Label authorLabel;
+
     private Button saveBookButton;
     private Button deleteBookButton;
     private Button logoutButton;
+    private Button buyButton;
+
+    private final User currentUser;
 
     public BookView(Stage primaryStage, List<BookDTO> books, User user) {
+        this.currentUser = user;
+
         primaryStage.setTitle("Library - Logged in as: " + user.getUsername());
 
         GridPane gridPane = new GridPane();
@@ -43,7 +51,6 @@ public class BookView {
 
         initTableView(gridPane);
         initSaveOptions(gridPane);
-
         initLogoutButton(gridPane);
 
         prepareGuiBasedOnRole(user);
@@ -79,7 +86,7 @@ public class BookView {
     }
 
     private void initTableView(GridPane gridPane){
-        bookTableView  = new TableView<BookDTO>();
+        bookTableView  = new TableView<>();
         bookTableView.setPlaceholder(new Label("No books to display"));
 
         TableColumn<BookDTO, String> titleColumn = new TableColumn<BookDTO, String>("Title");
@@ -88,7 +95,13 @@ public class BookView {
         TableColumn<BookDTO, String> authorColumn = new TableColumn<>("Author");
         authorColumn.setCellValueFactory(new PropertyValueFactory<>("author"));
 
-        bookTableView.getColumns().addAll(titleColumn,authorColumn);
+        TableColumn<BookDTO, Double> priceColumn = new TableColumn<>("Price");
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+        TableColumn<BookDTO, Integer> stockColumn = new TableColumn<>("Stock");
+        stockColumn.setCellValueFactory(new PropertyValueFactory<>("stock"));
+
+        bookTableView.getColumns().addAll(titleColumn,authorColumn, priceColumn, stockColumn);
         bookTableView.setItems(bookObservableList);
 
         gridPane.add(bookTableView,0,0, 5, 1);
@@ -112,6 +125,9 @@ public class BookView {
 
         deleteBookButton = new Button("Delete");
         gridPane.add(deleteBookButton,6,1);
+
+        buyButton = new Button("Buy");
+        gridPane.add(buyButton, 7, 1);
     }
 
     private void initLogoutButton(GridPane gridPane) {
@@ -129,6 +145,10 @@ public class BookView {
 
     public void addDeleteButtonListener(EventHandler<ActionEvent> deleteButtonListener){
         deleteBookButton.setOnAction(deleteButtonListener);
+    }
+
+    public void addBuyButtonListener(EventHandler<ActionEvent> listener) {
+        buyButton.setOnAction(listener);
     }
 
     public void addDisplayAlertMessage(String title, String header, String content){
@@ -158,5 +178,9 @@ public class BookView {
 
     public TableView getBookTableView() {
         return bookTableView;
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
     }
 }

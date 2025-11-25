@@ -74,7 +74,7 @@ public class Main {
                 new Cache<>()
         );
 
-        BookService bookService = new BookServiceImplementation(bookRepository);
+        //BookService bookService = new BookServiceImplementation(bookRepository);
 
         Connection connection = DatabaseConnectionFactory.getConnectionWrapper(true).getConnection();
 
