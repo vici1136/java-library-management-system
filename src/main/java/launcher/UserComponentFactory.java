@@ -4,10 +4,13 @@ import controller.UserController;
 import database.DatabaseConnectionFactory;
 import javafx.stage.Stage;
 import mapper.UserMapper;
+import repository.sales.SaleRepository;
+import repository.sales.SaleRepositoryMySQL;
 import repository.security.RightsRolesRepository;
 import repository.security.RightsRolesRepositoryMySQL;
 import repository.user.UserRepository;
 import repository.user.UserRepositoryMySQL;
+import service.report.ReportService;
 import service.user.UserService;
 import service.user.UserServiceImplementation;
 import view.UserView;
@@ -22,6 +25,8 @@ public class UserComponentFactory {
     private final UserService userService;
     private final UserRepository userRepository;
     private final RightsRolesRepository rightsRolesRepository;
+    private final SaleRepository saleRepository;
+    private final ReportService reportService;
 
     private static UserComponentFactory instance;
 
@@ -40,7 +45,12 @@ public class UserComponentFactory {
 
         List<UserDTO> userDTOs = UserMapper.convertUserListToUserDTOList(userService.findAll());
         this.userView = new UserView(stage, userDTOs);
-        this.userController = new UserController(userView, userService, rightsRolesRepository);
+
+        this.saleRepository = new SaleRepositoryMySQL(connection);
+
+        this.reportService = new ReportService(saleRepository);
+
+        this.userController = new UserController(userView, userService, rightsRolesRepository, reportService);
     }
 
     public UserController getUserController() {

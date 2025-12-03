@@ -23,6 +23,7 @@ public class UserView {
     private Button promoteButton;
     private Button deleteButton;
     private Button logoutButton;
+    private Button reportButton;
 
     public UserView(Stage primaryStage, List<UserDTO> users) {
         primaryStage.setTitle("User Management");
@@ -69,12 +70,17 @@ public class UserView {
     private void initButtons(GridPane gridPane) {
         promoteButton = new Button("Promote to Employee");
         deleteButton = new Button("Delete User");
+        reportButton = new Button("Generate PDF Report");
 
         HBox buttonBox = new HBox(10);
-        buttonBox.getChildren().addAll(promoteButton, deleteButton);
+        buttonBox.getChildren().addAll(promoteButton, deleteButton, reportButton);
         buttonBox.setAlignment(Pos.CENTER);
 
         gridPane.add(buttonBox, 0, 1, 5, 1);
+    }
+
+    public void addReportButtonListener(EventHandler<ActionEvent> listener) {
+        reportButton.setOnAction(listener);
     }
 
     private void initLogout(GridPane gridPane){

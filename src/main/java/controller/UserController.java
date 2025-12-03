@@ -10,6 +10,7 @@ import model.Role;
 import model.User;
 import model.validator.Notification;
 import repository.security.RightsRolesRepository;
+import service.report.ReportService;
 import service.user.UserService;
 import view.UserView;
 import view.model.UserDTO;
@@ -22,16 +23,18 @@ public class UserController {
     private final UserView userView;
     private final UserService userService;
     private final RightsRolesRepository rightsRolesRepository;
+    private final ReportService reportService;
 
-    public UserController(UserView userView, UserService userService, RightsRolesRepository rightsRolesRepository) {
+    public UserController(UserView userView, UserService userService, RightsRolesRepository rightsRolesRepository, ReportService reportService) {
         this.userView = userView;
         this.userService = userService;
         this.rightsRolesRepository = rightsRolesRepository;
+        this.reportService = reportService;
 
         this.userView.addPromoteButtonListener(new PromoteButtonListener());
         this.userView.addDeleteButtonListener(new DeleteButtonListener());
-
         this.userView.addLogoutButtonListener(new LogoutButtonListener());
+        this.userView.addReportButtonListener(new ReportButtonListener());
     }
 
     private class PromoteButtonListener implements EventHandler<ActionEvent> {
@@ -88,6 +91,14 @@ public class UserController {
             Stage stage = (Stage) userView.getScene().getWindow();
             stage.close();
             LoginComponentFactory.getInstance(false, stage);
+        }
+    }
+
+    private class ReportButtonListener implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+            reportService.generateReport();
+            userView.displayAlertMessage("Report", "Success", "PDF Report generated: MonthlyReport.pdf");
         }
     }
 

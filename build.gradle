@@ -17,7 +17,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'mysql:mysql-connector-java:8.0.33'
-
+    implementation 'com.itextpdf:itextpdf:5.5.13.3'
 }
 
 apply plugin: "com.github.johnrengelman.shadow"
