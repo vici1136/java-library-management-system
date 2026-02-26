@@ -1,5 +1,7 @@
 # 📚 Library Management System
 
+![Library Inventory View](assets/library-view.jpg)
+
 ## 1. Project Summary
 This project is a comprehensive desktop application designed to digitalize and streamline library processes. It facilitates seamless interactions between three distinct types of users: Administrators, Employees, and Customers. 
 
@@ -15,7 +17,8 @@ The application is built using modern software engineering practices to ensure s
 
 ## 3. Technologies Used
 ### ⚙️ Core & Backend Logic
-* **Java 21** * **Gradle** (Build Automation Tool)
+* **Java 21**
+* **Gradle** (Build Automation Tool)
 * **JDBC (Java Database Connectivity)** for executing highly optimized native SQL queries.
 * **SHA-256** for secure password cryptography.
 * **iText PDF** for automated generation of monthly sales and employee activity reports.
@@ -27,6 +30,24 @@ The application is built using modern software engineering practices to ensure s
 * **MySQL** (Relational Database Management System)
 * **Git** (Version Control)
 * **JUnit 5** (Unit Testing)
+
+## 📸 Application Previews
+
+### 1. Secure Login & Role Routing
+Users are dynamically routed based on their database-assigned role (Customer, Employee, Administrator).
+![Admin Routing](assets/admin-routing.png)
+
+### 2. Point of Sale & Inventory Management
+Real-time stock updates upon successful book purchases.
+![Successful Sale](assets/sale-success.png)
+
+### 3. User Management Dashboard
+Administrators have access to a dedicated dashboard to promote customers to employees, delete users, and track activity.
+![User Management](assets/user-management.jpg)
+
+### 4. Automated PDF Reporting
+Administrators can generate detailed monthly sales reports (powered by iText PDF) to track employee performance and total revenue.
+![PDF Sales Report](assets/pdf-report.jpg)
 
 ## 4. Documentation & Context
 This project was developed as a comprehensive practical implementation for the **Software Engineering** course, focusing on architectural patterns, database relational design, and secure application flow.
