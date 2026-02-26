@@ -1,6 +1,6 @@
 # 📚 Library Management System
 
-![Library Inventory View](assets/library-view.jpg)
+![Library Inventory View](assets/library-view.png)
 
 ## 1. Project Summary
 This project is a comprehensive desktop application designed to digitalize and streamline library processes. It facilitates seamless interactions between three distinct types of users: Administrators, Employees, and Customers. 
@@ -43,11 +43,11 @@ Real-time stock updates upon successful book purchases.
 
 ### 3. User Management Dashboard
 Administrators have access to a dedicated dashboard to promote customers to employees, delete users, and track activity.
-![User Management](assets/user-management.jpg)
+![User Management](assets/user-management.png)
 
 ### 4. Automated PDF Reporting
 Administrators can generate detailed monthly sales reports (powered by iText PDF) to track employee performance and total revenue.
-![PDF Sales Report](assets/pdf-report.jpg)
+![PDF Sales Report](assets/pdf-report.png)
 
 ## 4. Documentation & Context
 This project was developed as a comprehensive practical implementation for the **Software Engineering** course, focusing on architectural patterns, database relational design, and secure application flow.
