@@ -1,65 +1,80 @@
-# Library Management System
+# 📚 Library Management System
 
-Aceasta este o aplicație desktop completă pentru gestionarea unei biblioteci, dezvoltată în Java. Aplicația permite administrarea cărților, a utilizatorilor și procesarea vânzărilor, având o arhitectură robustă și un sistem de securitate bazat pe roluri.
+## 1. Project Summary
+This project is a comprehensive desktop application designed to digitalize and streamline library processes. It facilitates seamless interactions between three distinct types of users: Administrators, Employees, and Customers. 
 
-## 1. Rezumatul Aplicației
+The core purpose of the application is to handle book inventory, secure user authentication, process sales, and provide automated management reports. It features a robust MySQL database integration, a responsive JavaFX graphical interface, and a highly secure Role-Based Access Control (RBAC) system.
 
-Scopul principal al aplicației este digitalizarea proceselor dintr-o bibliotecă, facilitând interacțiunea dintre trei tipuri de actori: Administratori, Angajați și Clienți.
+## 2. Concepts & Architecture
+The application is built using modern software engineering practices to ensure scalability, maintainability, and security:
+* **Architecture:** Layered Architecture (Presentation/View, Service, and Data Access/Repository layers) adhering to **SOLID principles** and Clean Code methodologies.
+* **Design Patterns:** Extensive use of structural and creational patterns, including **Builder** (for complex objects), **Factory** (for component instantiation), **Singleton** (for database connections), and **Decorator** (for caching repository responses).
+* **Security:** Secure authentication mechanism utilizing **SHA-256 Hashing** for passwords and granular Role-Based Access Control (RBAC) driven by relational database mapping.
+* **Data Transfer:** Use of **DTOs (Data Transfer Objects)** to strictly separate database entity models from the UI presentation layer.
+* **Dependency Management:** **Manual Dependency Injection** implemented via component factories, demonstrating a deep understanding of inversion of control without relying on heavy external frameworks.
 
-**Funcționalități cheie:**
-* **Autentificare Securizată:** Sistem de login cu parole criptate (hashing) și redirectare dinamică în funcție de rol.
-* **Gestiunea Cărților (Inventory):** Adăugare, ștergere, afișare și actualizare stoc și preț.
-* **Vânzări:** Procesarea tranzacțiilor de cumpărare (Buy), care actualizează automat stocul cărților și generează istoricul vânzărilor.
-* **Raportare:** Generarea de rapoarte PDF automate (via iText) privind activitatea angajaților și veniturile generate în ultima lună.
-* **Gestiunea Utilizatorilor:** Administratorul poate promova clienți la statutul de angajați sau poate șterge utilizatori.
+## 3. Technologies Used
+### ⚙️ Core & Backend Logic
+* **Java 21** * **Gradle** (Build Automation Tool)
+* **JDBC (Java Database Connectivity)** for executing highly optimized native SQL queries.
+* **SHA-256** for secure password cryptography.
+* **iText PDF** for automated generation of monthly sales and employee activity reports.
 
-## 2. Concepte și Arhitectură
+### 💻 Frontend (GUI)
+* **JavaFX** (for a responsive, component-based desktop user interface)
 
-Aplicația este construită pe o **Arhitectură Stratificată (Layered Architecture)**, respectând principiile **SOLID** și **Clean Code** pentru a asigura scalabilitatea și mentenanța codului.
+### 🗄️ Database & Infrastructure
+* **MySQL** (Relational Database Management System)
+* **Git** (Version Control)
+* **JUnit 5** (Unit Testing)
 
-**Arhitectura:**
-* **Presentation Layer (View & Controller):** Realizat cu JavaFX, gestionează interfața grafică și interacțiunea cu utilizatorul.
-* **Service Layer:** Conține logica de business (ex: validarea stocului înainte de vânzare, alegerea aleatoare a unui angajat pentru procesarea vânzării, calcularea rapoartelor).
-* **Data Access Layer (Repository):** Comunică direct cu baza de date MySQL prin JDBC, executând interogări SQL native.
-* **Model/DTO:** Obiecte pentru transferul datelor între straturi (`BookDTO`, `ReportDTO`).
+## 4. Documentation & Context
+This project was developed as a comprehensive practical implementation for the **Software Engineering** course, focusing on architectural patterns, database relational design, and secure application flow.
 
-**Design Patterns (Tipare de proiectare) folosite:**
-* **Builder Pattern:** Folosit pentru crearea obiectelor complexe (`BookBuilder`, `UserBuilder`, `BookDTOBuilder`) într-un mod fluent.
-* **Factory Pattern:** Implementat în `ComponentFactory`, `LoginComponentFactory` și `SQLTableCreationFactory` pentru instanțierea obiectelor și gestionarea dependențelor.
-* **Singleton Pattern:** Asigură o instanță unică pentru anumite fabrici de componente și pentru conexiunea la baza de date.
-* **Decorator Pattern:** Folosit pentru adăugarea de funcționalități extra repository-urilor (ex: caching) fără a modifica codul existent.
-* **Data Transfer Object (DTO):** Separarea modelului de bază de date de modelul afișat în interfață.
+## 5. How to Run Locally
 
-**Alte concepte:**
-* **Manual Dependency Injection:** Injectarea dependențelor (Repositories în Services, Services în Controllers) se face manual prin Factory-uri, demonstrând înțelegerea mecanismului din spatele framework-urilor moderne.
-* **Role-Based Access Control (RBAC):** Permisiuni granulare bazate pe tabelele de legătură din baza de date (`user_role`, `role_right`).
+To run this application on your local machine, you will need to set up the Java environment and a local MySQL server.
 
-## 3. Tehnologii Folosite
+**Prerequisites:**
+* [Java JDK 21](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
+* [MySQL Server](https://dev.mysql.com/downloads/mysql/) running on the default port `3306`.
+* Your preferred Java IDE (IntelliJ IDEA, Eclipse, etc.)
 
-* **Limbaj:** Java 21
-* **GUI Framework:** JavaFX
-* **Build Tool:** Gradle
-* **Bază de date:** MySQL
-* **Conectivitate DB:** JDBC (Java Database Connectivity) - interogări SQL native pentru performanță, flexibilitate și control (inclusiv `JOIN`-uri complexe pentru rapoarte).
-* **Securitate:** SHA-256 Hashing pentru parole.
-* **Raportare:** iText PDF Library (pentru generarea rapoartelor de vânzări).
-* **Controlul Versiunii:** Git
+**Setup Steps:**
 
-## 4. Setup și Configurare
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/vici1136/java-library-management-system.git
+   cd java-library-management-system
+   ```
 
-Pentru a rula aplicația local:
+2. **Configure the Database Credentials:**
+   Navigate to `src/main/java/database/JDBConnectionWrapper.java` and ensure the database credentials match your local MySQL setup:
+   ```java
+   private static final String USER = "root";
+   private static final String PASSWORD = "your_mysql_password"; 
+   ```
 
-1. **Cerințe preliminare:**
-   * Java JDK 21 instalat.
-   * MySQL Server rulând local pe portul 3306.
-   * Credențialele MySQL setate corect în clasa `database.JDBConnectionWrapper` (utilizator și parolă).
+3. **Initialize the Database:**
+   Run the `main` method inside the `database.Bootstrap.java` class. 
+   > ⚠️ **Note:** This script will drop any existing library tables and recreate a fresh schema (including all foreign key constraints), automatically populating the necessary roles (`Administrator`, `Employee`, `Customer`) and rights.
 
-2. **Inițializare Bază de Date:**
-   * Proiectul include o clasă utilitară `database.Bootstrap`. Rularea metodei `main` din această clasă va "curăța" baza de date, va șterge tabelele existente și le va recrea curate (inclusiv constrângerile de tip Foreign Key), populând automat rolurile și drepturile necesare.
+4. **Start the Application:**
+   Run the `main` method inside the `launcher.Main.java` class to launch the JavaFX GUI.
 
-3. **Rulare Aplicație:**
-   * Executați clasa `launcher.Main` pentru a porni interfața grafică.
+5. **Test Accounts:**
+   You can create a new account directly from the app's "Sign Up" screen. Alternatively, after running `Bootstrap`, you can inject test users directly into your MySQL database or use the admin panel to promote newly created customers to Employees or Administrators.
 
-4. **Credențiale de Test:**
-   * Creați un cont nou direct din aplicație (Sign Up).
-   * Parola va fi salvată criptat în baza de date. Administratorul poate schimba rolurile din tabelele MySQL sau direct din panoul de administrare.
+## 6. Testing Strategy
+
+The application includes a comprehensive suite of unit tests to ensure the reliability of the business logic and data access layers.
+
+* **Framework:** JUnit 5
+* **Approach:** Unit testing focuses primarily on the **Service layer** and **Repository layer**, ensuring that business rules (like stock validation during sales) operate correctly.
+* **Mocking:** Custom mock implementations (e.g., `BookRepositoryMock`) are utilized to isolate services from the actual MySQL database. This ensures fast, deterministic test execution without causing side effects to the actual data.
+
+**To run the tests:**
+You can run the tests directly from your IDE's testing interface, or by executing the following Gradle command in your terminal:
+```bash
+./gradlew test
+```
